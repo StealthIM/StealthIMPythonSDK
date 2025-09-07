@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stealthimpysdk"       # pip 安装名
-version = "0.1.0"             # 版本
+version = "0.1.1"             # 版本
 description = "The SDK for StealthIM"
 readme = "README.md"
 license = {file = "LICENSE"}
