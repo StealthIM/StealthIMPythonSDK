@@ -107,25 +107,25 @@ async def login(
     response_data = await request(api_address, "POST", body=data)
     logger.debug(f"Response data: {response_data}")
 
-    info = UserInfo(
-        result=Result(
-            code=800,
-            msg=""
-        ),
-        create_time=response_data["user_info"]["create_time"],
-        email=response_data["user_info"]["email"],
-        nickname=response_data["user_info"]["nickname"],
-        phone_number=response_data["user_info"]["phone_number"],
-        username=response_data["user_info"]["username"]
-    ) if "user_info" in response_data else None
+    success = response_data["result"]["code"] == 800
 
     return LoginResult(
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
         ),
-        session=response_data.get("session"),
-        user_info=info
+        session=response_data["session"] if success else None,
+        user_info=UserInfo(
+            result=Result(
+                code=800,
+                msg=""
+            ),
+            create_time=response_data["user_info"]["create_time"],
+            email=response_data["user_info"]["email"],
+            nickname=response_data["user_info"]["nickname"],
+            phone_number=response_data["user_info"]["phone_number"],
+            username=response_data["user_info"]["username"]
+        ) if success else None
     )
 
 
@@ -151,16 +151,18 @@ async def get_self_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
+    success = response_data["result"]["code"] == 800
+
     return UserInfo(
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
         ),
-        create_time=response_data["user_info"]["create_time"],
-        email=response_data["user_info"]["email"],
-        nickname=response_data["user_info"]["nickname"],
-        phone_number=response_data["user_info"]["phone_number"],
-        username=response_data["user_info"]["username"]
+        create_time=response_data["user_info"]["create_time"] if success else None,
+        email=response_data["user_info"]["email"] if success else None,
+        nickname=response_data["user_info"]["nickname"] if success else None,
+        phone_number=response_data["user_info"]["phone_number"] if success else None,
+        username=response_data["user_info"]["username"] if success else None
     )
 
 
@@ -188,16 +190,14 @@ async def get_user_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
-    nickname = None
-    if response_data["result"]["code"] == 800:
-        nickname = response_data["user_info"]["nickname"]
+    success = response_data["result"]["code"] == 800
 
     return UserPublicInfo(
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
         ),
-        nickname=nickname
+        nickname=response_data["user_info"]["nickname"] if success else None
     )
 
 

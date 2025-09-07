@@ -63,8 +63,10 @@ async def get_groups(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
+    success = response_data["result"]["code"] == 800
+
     return GetGroupsResult(
-        groups=response_data["groups"],
+        groups=response_data["groups"] if success else None,
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
@@ -86,15 +88,15 @@ async def get_group_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
-    members = [
-        GroupMember(
-            name=member["name"],
-            type=GroupMemberType(member.get("type", 0)),
-        ) for member in response_data["members"]
-    ] if response_data["result"]["code"] == 800 else None
+    success = response_data["result"]["code"] == 800
 
     return GroupInfoResult(
-        members=members,
+        members=[
+            GroupMember(
+                name=member["name"],
+                type=GroupMemberType(member.get("type", 0)),
+            ) for member in response_data["members"]
+        ] if success else None,
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
@@ -116,9 +118,11 @@ async def get_group_public_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
+    success = response_data["result"]["code"] == 800
+
     return GroupPublicInfoResult(
-        create_at=response_data["create_at"],
-        name=response_data["name"],
+        create_at=response_data["create_at"] if success else None,
+        name=response_data["name"] if success else None,
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
@@ -143,8 +147,10 @@ async def create_group(
     response_data = await request(api_address, "POST", headers=header, body=body)
     logger.debug(f"Response data: {response_data}")
 
+    success = response_data["result"]["code"] == 800
+
     return CreateGroupResult(
-        groupid=response_data["groupid"],
+        groupid=response_data["groupid"] if success else None,
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
