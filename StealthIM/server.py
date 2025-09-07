@@ -1,9 +1,8 @@
-import asyncio
 from typing import Optional
 
-from . import apis
-from .apis.user import RegisterResult, UserInfo
-from .user import User
+from StealthIM.apis import user, util
+from StealthIM.apis.user import RegisterResult
+from StealthIM.user import User
 
 
 class Server:
@@ -26,7 +25,7 @@ class Server:
         Returns:
             bool: True if the server is reachable, False otherwise.
         """
-        return await apis.util.ping(self.url)
+        return await util.ping(self.url)
 
     async def register(
             self,
@@ -52,7 +51,7 @@ class Server:
         Raises:
             RuntimeError: If the registration fails for any reason.
         """
-        return await apis.user.register(self.url, username, password, nickname, email, phone_number)
+        return await user.register(self.url, username, password, nickname, email, phone_number)
 
     async def login(
             self,
@@ -72,7 +71,7 @@ class Server:
         Raises:
             RuntimeError: If the login fails for any other reason.
         """
-        login_data = await apis.user.login(self.url, username, password)
+        login_data = await user.login(self.url, username, password)
         if login_data.result.code in (1201, 1203):
             return None
         if login_data.result.code != 800:

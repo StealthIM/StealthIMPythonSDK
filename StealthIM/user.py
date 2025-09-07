@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from . import apis
+import StealthIM
 from .apis.common import NoValResult
 from .apis.group import GetGroupsResult
 from .apis.user import (
@@ -37,7 +37,7 @@ class User:
         Raises:
             RuntimeError: If the user is deleted.
         """
-        return await apis.user.get_self_info(self.server.url, self.session)
+        return await StealthIM.apis.user.get_self_info(self.server.url, self.session)
 
     @not_deleted
     async def get_user_info(self, username: str) -> UserPublicInfo:
@@ -53,7 +53,7 @@ class User:
         Raises:
             RuntimeError: If the user is deleted or the request fails.
         """
-        return await apis.user.get_user_info(self.server.url, self.session, username)
+        return await StealthIM.apis.user.get_user_info(self.server.url, self.session, username)
 
     @not_deleted
     async def change_password(self, new_password: str) -> ChangePasswordResult:
@@ -69,7 +69,7 @@ class User:
         Raises:
             RuntimeError: If the password change fails or the user is deleted.
         """
-        return await apis.user.change_password(self.server.url, self.session, new_password)
+        return await StealthIM.apis.user.change_password(self.server.url, self.session, new_password)
 
     @not_deleted
     async def change_email(self, new_email: str) -> ChangeEmailResult:
@@ -85,7 +85,7 @@ class User:
         Raises:
             RuntimeError: If the email change fails or the user is deleted.
         """
-        return await apis.user.change_email(self.server.url, self.session, new_email)
+        return await StealthIM.apis.user.change_email(self.server.url, self.session, new_email)
 
     @not_deleted
     async def change_nickname(self, new_nickname: str) -> ChangeNicknameResult:
@@ -101,7 +101,7 @@ class User:
         Raises:
             RuntimeError: If the nickname change fails or the user is deleted.
         """
-        return await apis.user.change_nickname(self.server.url, self.session, new_nickname)
+        return await StealthIM.apis.user.change_nickname(self.server.url, self.session, new_nickname)
 
     @not_deleted
     async def change_phone_number(self, new_phone_number: str) -> ChangePhoneNumberResult:
@@ -117,7 +117,7 @@ class User:
         Raises:
             RuntimeError: If the phone number change fails or the user is deleted.
         """
-        return await apis.user.change_phone_number(self.server.url, self.session, new_phone_number)
+        return await StealthIM.apis.user.change_phone_number(self.server.url, self.session, new_phone_number)
 
     @not_deleted
     async def update_info(
@@ -161,7 +161,7 @@ class User:
             if result.result.code != 800:
                 raise RuntimeError(f"Phone number change failed with code {result.result.code}")
         return NoValResult(
-            result=apis.common.Result(code=800, msg="")
+            result=StealthIM.apis.common.Result(code=800, msg="")
         )
 
     async def delete(self) -> DeleteResult:
@@ -174,7 +174,7 @@ class User:
         Raises:
             RuntimeError: If the delete fails.
         """
-        res = await apis.user.delete(self.server.url, self.session)
+        res = await StealthIM.apis.user.delete(self.server.url, self.session)
         if res.result.code == 800:
             self.deleted = True
         return res
@@ -187,4 +187,4 @@ class User:
         Returns:
             GetGroupsResult: The result of the get groups operation.
         """
-        return await apis.group.get_groups(self.server.url, self.session)
+        return await StealthIM.apis.group.get_groups(self.server.url, self.session)

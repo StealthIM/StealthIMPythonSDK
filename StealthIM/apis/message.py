@@ -91,7 +91,7 @@ async def get_message(
         direction: int
 ):
     # noinspection PyStatementEffect
-    from_id + direction # currently unused
+    direction # currently unused
 
     api_address = f'{url}/api/v1/message/{groupid}?msgid={from_id}'
     logger.debug(f"Called API get_message with url {api_address}")

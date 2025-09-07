@@ -1,8 +1,6 @@
-import logging
 import unittest
 
-import StealthIM.apis.util
-from StealthIM import logger
+import StealthIM
 
 
 class TestUtil(unittest.TestCase):

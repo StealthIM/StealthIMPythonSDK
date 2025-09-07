@@ -1,3 +1,2 @@
-.venv
-.idea
-cli.py
+StealthIMSDK.egg-info
+__pycache__

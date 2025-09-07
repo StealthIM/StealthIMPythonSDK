@@ -2,13 +2,14 @@ import dataclasses
 from typing import Optional
 
 from .common import Result, request, NoValResult
-from .. import logger
+from StealthIM import logger
 
 
 RegisterResult = NoValResult
 
 @dataclasses.dataclass
 class UserInfo:
+    result: Result
     create_time: str
     email: str
     nickname: str
@@ -23,6 +24,7 @@ class LoginResult:
 
 @dataclasses.dataclass
 class UserPublicInfo:
+    result: Result
     nickname: str
 
 ChangePasswordResult = NoValResult
@@ -102,6 +104,10 @@ async def login(
     logger.debug(f"Response data: {response_data}")
 
     info = UserInfo(
+        result=Result(
+            code=800,
+            msg=""
+        ),
         create_time=response_data["user_info"]["create_time"],
         email=response_data["user_info"]["email"],
         nickname=response_data["user_info"]["nickname"],
@@ -141,6 +147,10 @@ async def get_self_info(
     logger.debug(f"Response data: {response_data}")
 
     return UserInfo(
+        result=Result(
+            code=response_data["result"]["code"],
+            msg=response_data["result"]["msg"]
+        ),
         create_time=response_data["user_info"]["create_time"],
         email=response_data["user_info"]["email"],
         nickname=response_data["user_info"]["nickname"],
@@ -172,8 +182,16 @@ async def get_user_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
+    nickname = None
+    if response_data["result"]["code"] == 800:
+        nickname = response_data["user_info"]["nickname"]
+
     return UserPublicInfo(
-        nickname=response_data["user_info"]["nickname"]
+        result=Result(
+            code=response_data["result"]["code"],
+            msg=response_data["result"]["msg"]
+        ),
+        nickname=nickname
     )
 
 async def change_password(

@@ -3,6 +3,8 @@ from typing import Any
 
 import aiohttp
 
+from StealthIM import logger
+
 
 @dataclasses.dataclass
 class Result:
@@ -38,8 +40,10 @@ async def request(
     Raises:
         RuntimeError: If the server returns an internal error too many times.
     """
+    logger.debug(f"Request url: {url}")
+    logger.debug(f"Method: {method}, Data: {data}, Body: {body}, Header: {headers}")
     current_retry = 0
-    while True:
+    while current_retry < retry:
         async with aiohttp.ClientSession() as session:
             async with session.request(method, url, data=data, headers=headers, json=body) as response:
                 if response.status != 200:
@@ -47,8 +51,11 @@ async def request(
                 response_data = await response.json()
 
                 if 900 <= response_data["result"]["code"] <= 999:
+                    logger.error(f"Request failed with code: {response_data['result']['code']}")
+                    logger.error(f"Request failed with data: {response_data}")
                     current_retry += 1
                     continue
 
                 return response_data
+    logger.error(f"Request to {url} failed after {retry} retries.")
     raise RuntimeError(f"Request failed with code: {response_data['result']['code']}")

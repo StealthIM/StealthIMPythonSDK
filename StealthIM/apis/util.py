@@ -1,6 +1,6 @@
 import aiohttp
 
-from .. import logger
+from StealthIM import logger
 
 async def ping(url: str) -> bool:
     """

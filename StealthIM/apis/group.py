@@ -2,7 +2,7 @@ import dataclasses
 import enum
 
 from .common import request, Result, NoValResult
-from .. import logger
+from StealthIM import logger
 
 
 @dataclasses.dataclass
@@ -79,13 +79,15 @@ async def get_group_info(
     response_data = await request(api_address, "GET", headers=header)
     logger.debug(f"Response data: {response_data}")
 
+    members = [
+        GroupMember(
+            name=member["name"],
+            type=GroupMemberType(member.get("type", 0)),
+        ) for member in response_data["members"]
+    ] if response_data["result"]["code"] == 800 else None
+
     return GroupInfoResult(
-        members=[
-            GroupMember(
-                name=member["name"],
-                type=GroupMemberType(member.get("type", 0)),
-            ) for member in response_data["members"]
-        ],
+        members=members,
         result=Result(
             code=response_data["result"]["code"],
             msg=response_data["result"]["msg"]
