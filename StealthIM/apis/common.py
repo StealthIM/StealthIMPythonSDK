@@ -11,6 +11,7 @@ class Result:
     code: int
     msg: str
 
+
 @dataclasses.dataclass
 class NoValResult:
     result: Result

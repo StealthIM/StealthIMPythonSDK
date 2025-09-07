@@ -1,11 +1,11 @@
 import dataclasses
 from typing import Optional
 
-from .common import Result, request, NoValResult
 from StealthIM import logger
-
+from .common import Result, request, NoValResult
 
 RegisterResult = NoValResult
+
 
 @dataclasses.dataclass
 class UserInfo:
@@ -16,16 +16,19 @@ class UserInfo:
     phone_number: str
     username: str
 
+
 @dataclasses.dataclass
 class LoginResult:
     result: Result
     session: Optional[str] = None
     user_info: Optional[UserInfo] = None
 
+
 @dataclasses.dataclass
 class UserPublicInfo:
     result: Result
     nickname: str
+
 
 ChangePasswordResult = NoValResult
 ChangeEmailResult = NoValResult
@@ -78,6 +81,7 @@ async def register(
         )
     )
 
+
 async def login(
         url: str,
         username: str,
@@ -122,7 +126,8 @@ async def login(
         ),
         session=response_data.get("session"),
         user_info=info
-)
+    )
+
 
 async def get_self_info(
         url: str,
@@ -157,6 +162,7 @@ async def get_self_info(
         phone_number=response_data["user_info"]["phone_number"],
         username=response_data["user_info"]["username"]
     )
+
 
 async def get_user_info(
         url: str,
@@ -194,6 +200,7 @@ async def get_user_info(
         nickname=nickname
     )
 
+
 async def change_password(
         url: str,
         session: str,
@@ -227,6 +234,7 @@ async def change_password(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def change_email(
         url: str,
@@ -262,6 +270,7 @@ async def change_email(
         )
     )
 
+
 async def change_nickname(
         url: str,
         session: str,
@@ -296,6 +305,7 @@ async def change_nickname(
         )
     )
 
+
 async def change_phone_number(
         url: str,
         session: str,
@@ -329,6 +339,7 @@ async def change_phone_number(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def delete(
         url: str,

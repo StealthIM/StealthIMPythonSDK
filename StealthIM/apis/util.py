@@ -2,6 +2,7 @@ import aiohttp
 
 from StealthIM import logger
 
+
 async def ping(url: str) -> bool:
     """
     Ping the server to check if it is reachable.
@@ -23,10 +24,9 @@ async def ping(url: str) -> bool:
                     return False
                 response_data = await response.json()
         logger.debug(f"Response data: {response_data}")
-        if response_data != {"message":"Hello, StealthIM!"}:
+        if response_data != {"message": "Hello, StealthIM!"}:
             return False
     except aiohttp.ClientError as e:
         logger.error(f"Ping failed with error: {e}")
         return False
     return True
-

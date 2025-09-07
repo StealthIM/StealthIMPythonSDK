@@ -1,8 +1,8 @@
 import dataclasses
 import enum
 
-from .common import request, Result, NoValResult
 from StealthIM import logger
+from .common import request, Result, NoValResult
 
 
 @dataclasses.dataclass
@@ -10,20 +10,24 @@ class GetGroupsResult:
     groups: list[int]
     result: Result
 
+
 class GroupMemberType(enum.Enum):
     Member = 0
     Manager = 1
     Owner = 2
+
 
 @dataclasses.dataclass
 class GroupMember:
     name: str
     type: GroupMemberType
 
+
 @dataclasses.dataclass
 class GroupInfoResult:
     members: list[GroupMember]
     result: Result
+
 
 @dataclasses.dataclass
 class GroupPublicInfoResult:
@@ -31,10 +35,12 @@ class GroupPublicInfoResult:
     name: str
     result: Result
 
+
 @dataclasses.dataclass
 class CreateGroupResult:
     groupid: int
     result: Result
+
 
 JoinGroupResult = NoValResult
 InviteGroupResult = NoValResult
@@ -65,6 +71,7 @@ async def get_groups(
         )
     )
 
+
 async def get_group_info(
         url: str,
         session: str,
@@ -94,6 +101,7 @@ async def get_group_info(
         )
     )
 
+
 async def get_group_public_info(
         url: str,
         session: str,
@@ -116,6 +124,7 @@ async def get_group_public_info(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def create_group(
         url: str,
@@ -142,6 +151,7 @@ async def create_group(
         )
     )
 
+
 async def join_group(
         url: str,
         session: str,
@@ -167,6 +177,7 @@ async def join_group(
         )
     )
 
+
 async def invite_group(
         url: str,
         session: str,
@@ -191,6 +202,7 @@ async def invite_group(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def set_user_role(
         url: str,
@@ -218,6 +230,7 @@ async def set_user_role(
         )
     )
 
+
 async def kick_user(
         url: str,
         session: str,
@@ -239,6 +252,7 @@ async def kick_user(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def change_group_name(
         url: str,
@@ -264,6 +278,7 @@ async def change_group_name(
             msg=response_data["result"]["msg"]
         )
     )
+
 
 async def change_group_password(
         url: str,

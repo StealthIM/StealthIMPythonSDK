@@ -15,9 +15,14 @@ class MessageType(enum.Enum):
     LargeEmoji = 2
     Emoji = 3
     File = 4
+    Card = 5
+    InnerLink = 6
+    Recall = 16
+
 
 SendMessageResult = NoValResult
 RecallMessageResult = NoValResult
+
 
 @dataclasses.dataclass
 class Message:
@@ -57,6 +62,7 @@ async def send_message(
         )
     )
 
+
 async def recall_message(
         url: str,
         session: str,
@@ -91,7 +97,7 @@ async def get_message(
         direction: int
 ):
     # noinspection PyStatementEffect
-    direction # currently unused
+    direction  # currently unused
 
     api_address = f'{url}/api/v1/message/{groupid}?msgid={from_id}'
     logger.debug(f"Called API get_message with url {api_address}")
@@ -125,4 +131,3 @@ async def get_message(
                             username=msg["username"],
                             hash=msg.get("hash", None),
                         )
-
