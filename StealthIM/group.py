@@ -1,7 +1,8 @@
 import StealthIM
 from StealthIM import User
 from StealthIM.apis.group import GroupInfoResult, GroupPublicInfoResult, InviteGroupResult, \
-    GroupMemberType, SetMemberRoleResult, KickMemberResult, ChangeGroupNameResult, ChangeGroupPasswordResult
+    GroupMemberType, SetMemberRoleResult, KickMemberResult, ChangeGroupNameResult, ChangeGroupPasswordResult, \
+    JoinGroupResult, CreateGroupResult
 from StealthIM.apis.message import SendMessageResult
 
 
@@ -11,7 +12,7 @@ class Group:
         self.group_id = group_id
 
     @classmethod
-    async def create(cls, user: User, group_name: str) -> "Group":
+    async def create(cls, user: User, group_name: str) -> CreateGroupResult:
         """
         Create a new Group.
 
@@ -25,19 +26,14 @@ class Group:
         Raises:
             RuntimeError: If the request failed.
         """
-        res = await StealthIM.apis.group.create_group(user.server.url, user.session, group_name)
-        if res.result.code != 800:
-            raise RuntimeError(res.result.msg)
-        return cls(user, res.groupid)
+        return await StealthIM.apis.group.create_group(user.server.url, user.session, group_name)
 
-    @classmethod
-    async def join(cls, user: User, group_id: int, password: str) -> "Group":
+    async def join(self, password: str) -> JoinGroupResult:
         """
         Join a Group.
 
         Args:
             user (User): The user to join.
-            group_id (int): The ID of the group.
             password (str): The password.
 
         Returns:
@@ -46,10 +42,8 @@ class Group:
         Raises:
             RuntimeError: If the request failed.
         """
-        res = await StealthIM.apis.group.join_group(user.server.url, user.session, group_id, password)
-        if res.result.code != 800:
-            raise RuntimeError(res.result.msg)
-        return cls(user, group_id)
+        return await StealthIM.apis.group.join_group(self.user.server.url, self.user.session, self.group_id, password)
+
 
     async def get_members(self) -> GroupInfoResult:
         """
