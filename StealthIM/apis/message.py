@@ -8,6 +8,12 @@ import aiohttp
 from .common import request, NoValResult, Result
 from .. import logger
 
+timeout_for_sse = aiohttp.ClientTimeout(
+    total=None,  # 整体无超时
+    sock_connect=None,  # 连接无超时
+    sock_read=None  # 读取无超时
+)
+
 
 class MessageType(enum.Enum):
     Text = 0
@@ -105,29 +111,31 @@ async def get_message(
         "Authorization": f"Bearer {session}",
     }
 
-    async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.get(api_address) as response:
-            if response.status != 200:
-                raise RuntimeError(f"Request failed with status: {response.status}")
+    async with (
+        aiohttp.ClientSession(headers=headers, timeout=timeout_for_sse) as session,
+        session.get(api_address) as response
+    ):
+        if response.status != 200:
+            raise RuntimeError(f"Request failed with status: {response.status}")
 
-            async for line in response.content:
-                # 解码成字符串
-                line = line.decode('utf-8').strip()
-                if line.startswith('data:'):
-                    # 提取消息内容
-                    message = line[len('data:'):].strip()
+        async for line in response.content:
+            # 解码成字符串
+            line = line.decode('utf-8').strip()
+            if line.startswith('data:'):
+                # 提取消息内容
+                message = line[len('data:'):].strip()
 
-                    data = json.loads(message)
-                    logger.debug(f"Response data: {data}")
-                    if data["result"]["code"] != 800:
-                        raise RuntimeError(f"Request failed with code: {data['result']['code']}")
-                    for msg in data["msg"]:
-                        yield Message(
-                            groupid=msg["groupid"],
-                            msg=msg["msg"],
-                            msgid=msg["msgid"],
-                            time=msg["time"],
-                            type=MessageType(msg["type"]),
-                            username=msg["username"],
-                            hash=msg.get("hash", None),
-                        )
+                data = json.loads(message)
+                logger.debug(f"Response data: {data}")
+                if data["result"]["code"] != 800:
+                    raise RuntimeError(f"Request failed with code: {data['result']['code']}")
+                for msg in data["msg"]:
+                    yield Message(
+                        groupid=msg["groupid"],
+                        msg=msg["msg"],
+                        msgid=msg["msgid"],
+                        time=msg["time"],
+                        type=MessageType(msg["type"]),
+                        username=msg["username"],
+                        hash=msg.get("hash", None),
+                    )

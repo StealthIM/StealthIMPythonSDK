@@ -33,7 +33,6 @@ class Group:
         Join a Group.
 
         Args:
-            user (User): The user to join.
             password (str): The password.
 
         Returns:
@@ -43,7 +42,6 @@ class Group:
             RuntimeError: If the request failed.
         """
         return await StealthIM.apis.group.join_group(self.user.server.url, self.user.session, self.group_id, password)
-
 
     async def get_members(self) -> GroupInfoResult:
         """
