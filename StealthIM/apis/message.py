@@ -100,12 +100,15 @@ async def get_message(
         session: str,
         groupid: int,
         from_id: int,
-        direction: int
+        old_to_new: bool,
+        sync: bool,
+        limit: int = 128,
 ):
-    # noinspection PyStatementEffect
-    direction  # currently unused
-
-    api_address = f'{url}/api/v1/message/{groupid}?msgid={from_id}'
+    assert 0 <= limit <= 256, "Limit must be between 0 and 256"
+    api_address = (
+        f'{url}/api/v1/message/{groupid}?'
+        f'msgid={from_id}&prev={"false" if old_to_new else "true"}&sync={"true" if sync else "false"}&limit={limit}'
+    )
     logger.debug(f"Called API get_message with url {api_address}")
     headers = {
         "Authorization": f"Bearer {session}",

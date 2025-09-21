@@ -88,13 +88,15 @@ class Group:
             StealthIM.apis.message.MessageType.Text
         )
 
-    async def receive_text(self, from_id: int = 0):
+    async def receive_text(self, from_id: int = 0, old_to_new: bool = True, sync: bool = True, limit: int = 128):
         gen = StealthIM.apis.message.get_message(
             self.user.server.url,
             self.user.session,
             self.group_id,
             from_id,
-            0
+            old_to_new,
+            sync,
+            limit
         )
         async for data in gen:
             yield data
