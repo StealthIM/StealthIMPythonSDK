@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stealthimpysdk"       # pip 安装名
-version = "0.1.4"             # 版本
+version = "0.1.5"             # 版本
 description = "The SDK for StealthIM"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -12,7 +12,8 @@ authors = [
   { name = "Ken", email = "keniis@126.com" }
 ]
 dependencies = [
-  "aiohttp>=3.12.15"
+  "aiohttp>=3.12.15",
+  "blake3==1.0.6"
 ]
 requires-python = ">=3.9"
 
