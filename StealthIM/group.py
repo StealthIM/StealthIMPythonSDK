@@ -129,11 +129,10 @@ class Group:
             StealthIM.apis.message.MessageType.Text
         )
 
-    async def receive_text(self, from_id: int = 0, old_to_new: bool = True, sync: bool = True, limit: int = 128):
+    async def receive_text(self, from_id: int = 0, sync: bool = True, limit: int = 128):
         """
         Receive text messages from the group.
         :param from_id: Start message ID
-        :param old_to_new: Sort from old to new
         :param sync: Whether to sync
         :param limit: Maximum number of messages
         :yield: Message data
@@ -143,11 +142,18 @@ class Group:
             self.user.session,
             self.group_id,
             from_id,
-            old_to_new,
             sync,
             limit
         )
         async for data in gen:
+            yield data
+
+    async def receive_latest_text(self, limit: int = 128):
+        async for data in self.receive_text(from_id=0, sync=False, limit=limit):
+            yield data
+
+    async def receive_new_text(self, limit: int = 128):
+        async for data in self.receive_text(from_id=-1, limit=limit):
             yield data
 
     async def recall_message(self, message_id: int):

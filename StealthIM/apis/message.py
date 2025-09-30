@@ -100,14 +100,13 @@ async def get_message(
         session: str,
         groupid: int,
         from_id: int,
-        old_to_new: bool,
         sync: bool,
         limit: int = 128,
 ):
     assert 0 <= limit <= 256, "Limit must be between 0 and 256"
     api_address = (
         f'{url}/api/v1/message/{groupid}?'
-        f'msgid={from_id}&prev={"false" if old_to_new else "true"}&sync={"true" if sync else "false"}&limit={limit}'
+        f'msgid={from_id}&sync={"true" if sync else "false"}&limit={limit}'
     )
     logger.debug(f"Called API get_message with url {api_address}")
     headers = {
